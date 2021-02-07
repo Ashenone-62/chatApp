@@ -21,6 +21,11 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+//引入socket模块
+//调用getSocket方法并把实例化好的server传入
+var socketIO = require("../socket.io");
+socketIO.getSocket(server)
+
 /**
  * Listen on provided port, on all network interfaces.
  */

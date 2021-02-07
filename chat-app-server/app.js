@@ -28,9 +28,9 @@ app.use('/users', usersRouter);
 //创建userList接口
 app.get('/api/userlist',async function(req,res){
   //查询users表的所有内容的SQL语句
-  let sqlStr_getUserlist = "select * from users";
+  let sqlStr_getUserList = "select * from users";
   //执行上面的语句，并把结果给res_getUserList
-  let res_getUserList = await sqlQuery(sqlStr_getUserlist)
+  let res_getUserList = await sqlQuery(sqlStr_getUserList)
 
   //解决跨域的问题，因为本地服务器是3000端口，前端是8080端口
   res.append('Access-Control-Allow-Origin','*');
