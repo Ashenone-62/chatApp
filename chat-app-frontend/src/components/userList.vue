@@ -15,13 +15,13 @@
         </div>
 
         <div class="users">
-            <div class="userItem">
-                <div class="left">
-                    <img src="" alt="">
+            <div class="userItem" v-for="(item,i) in friends" :key="i" @click="chooseUser(item)">
+                <div class="left defaultColor" :class="{isOnlineFilter:item.online_state=='true'}">
+                    <img :src="item.avatar" alt="">
                 </div>
                 <div class="right">
-                    <span class="username"></span>
-                    <span class="currentMsg"></span>
+                    <div class="username">{{item.username}}</div>
+                    <div class="currentMsg"> </div>
                 </div>
             </div>
         </div>
@@ -30,8 +30,14 @@
 
 <script>
 export default {
-    props:['online_state']
-    
+    props:['online_state','users','chooseUser'],
+    computed:{
+        friends:function(){
+            return this.users.filter((item,i)=>{
+                return item.username != this.$root.me.username
+            })
+        }
+    }
 }
 </script>
 
@@ -63,5 +69,29 @@ export default {
         text-align: center;
         font-weight: bold;
         color: white;
+    }
+
+    .userItem{
+        display: flex;
+        margin: 1rem;
+        align-items: center;
+        box-shadow:0 0 3px rgba(0, 0, 0, 0.5);
+        border-radius: 0.5rem;
+    }
+
+    .left {
+        display: flex;
+        padding: 0.5rem;
+        width: 15%;
+    }
+    .left img {
+        width: 100%;
+        border-radius: 0.5rem;
+        box-shadow:0 0 3px rgba(0, 0, 0, 0.5);
+    }
+    .right{
+        display: flex;
+        flex-direction: column;
+        margin-left: 0.5rem;
     }
 </style>

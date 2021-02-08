@@ -1,13 +1,15 @@
 <template>
   <div id="app">
       <choose-user v-if="$root.me == null" :userList="userList"></choose-user>
-      <user-list :online_state='online_state'></user-list>
+      <user-list v-if="chatting != true" :online_state="online_state" :users="users" :chooseUser="chooseUser"></user-list>
+      <chat-user v-if="chatting" :toUser="toUser" :shutChat="shutChat"></chat-user>
   </div>
 </template>
 
 <script>
 import chooseUser from './components/chooseUser.vue';
 import userList from './components/userList.vue';
+import chatUser from './components/chatUser.vue';
 import axios from 'axios'
 import socket from './assets/javascripts/socket.io'
 
@@ -15,12 +17,16 @@ export default {
   name: 'App',
   components: {
     chooseUser,
-    userList
+    userList,
+    chatUser
   },
   data(){
     return {
       userList: [],
-      online_state: false
+      online_state: false,
+      users:[],
+      chatting:false,
+      toUser:null
     }
   },
   async beforeMount(){
@@ -31,12 +37,27 @@ export default {
     socket.on('login',(data) => {
       if(data.state == "ok"){
         this.online_state = true;
+        socket.emit('userList')
       }
     });
+
     socket.on('logout',()=>{
       this.online_state = false;
       socket.disconnect()
+    });
+
+    socket.on('userList',(data)=>{
+      this.users = data
     })
+  },
+  methods:{
+    chooseUser:function(user){
+      this.toUser = user;
+      this.chatting = true;
+    },
+    shutChat:function(){
+      this.chatting = false;
+    },
   }
 }
 </script>
