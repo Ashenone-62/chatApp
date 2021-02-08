@@ -1,4 +1,3 @@
-const e = require('express');
 var mysql = require('mysql')
 
 let options = {

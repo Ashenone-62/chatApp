@@ -2,8 +2,6 @@
       <div class="chooserUser">
         <h1 class="title">选择您的角色</h1>
         <div class="list">
-            <!-- v-for列表渲染userList里的内容 -->
-            <!-- 绑定chooseUser事件，传入当前点击的item -->
             <div class="item" @click="chooseUser(item)" v-for="(item,i) in userList" :key="i">
                 <img :src="item.avatar">
                 <span>{{item.username}}</span>
@@ -16,15 +14,11 @@
 import socket from '../assets/javascripts/socket.io'
 
 export default {
-    //props标记传入的userList
     props:['userList'],
     methods:{
         chooseUser:function(user){
-            //设置$root.me为传入的user，即设置当前用户
             this.$root.me = user;
-            //并将其保存于缓存之中
             localStorage.me = JSON.stringify(user);
-            //发送login事件，将user传给后端
             socket.emit('login',user);
         },
     },

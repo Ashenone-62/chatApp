@@ -1,10 +1,7 @@
 <template>
-<!-- 如果$root.me不为空显示这个组件的内容 -->
     <div class="userList" v-if="$root.me != null">
         <div class="head">
-            <!-- 绑定class属性，如果online_state是true我们就添加isOnlineFilter类(在线)，默认为黑灰色 -->
             <div class="avatar defaultColor" :class="{isOnlineFilter:online_state}">
-                <!-- 设置为当前用户的头像 -->
                 <img :src="$root.me.avatar" alt="">
             </div>
 
@@ -33,7 +30,6 @@
 
 <script>
 export default {
-    //声明传入的参数online_state
     props:['online_state']
     
 }
