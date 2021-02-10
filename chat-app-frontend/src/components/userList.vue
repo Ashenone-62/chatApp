@@ -16,8 +16,8 @@
 
         <div class="users">
             <div class="userItem" v-for="(item,i) in friends" :key="i" @click="chooseUser(item)">
-                <div class="left defaultColor" :class="{isOnlineFilter:item.online_state=='true'}">
-                    <img :src="item.avatar" alt="">
+                <div class="left" :class="{unRead:unReadUser.indexOf(item.username)!=-1}">
+                    <img class="defaultColor" :src="item.avatar" alt="" :class="{isOnlineFilter:item.online_state=='true'}">
                 </div>
                 <div class="right">
                     <div class="username">{{item.username}}</div>
@@ -30,14 +30,14 @@
 
 <script>
 export default {
-    props:['online_state','users','chooseUser'],
+    props:['online_state','users','chooseUser','unReadUser'],
     computed:{
         friends:function(){
             return this.users.filter((item,i)=>{
                 return item.username != this.$root.me.username
             })
         }
-    }
+    },
 }
 </script>
 
@@ -93,5 +93,34 @@ export default {
         display: flex;
         flex-direction: column;
         margin-left: 0.5rem;
+    }
+
+    .unRead{
+        position: relative;
+    }
+    .unRead::before{
+        position: absolute;
+        content: "";
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        background-color: red;
+        bottom: 5px;
+        right: 5px;
+        z-index: 9999;
+        animation: unReadAnimate 1s infinite ease-in-out;
+    }
+
+    @keyframes unReadAnimate {
+        0%{
+            opacity: 0.5;
+        }
+        50%{
+            opacity: 1;
+        }
+        100%{
+            opacity: 0.5;
+        }
     }
 </style>

@@ -28,6 +28,16 @@ function getSocket(server){
             let res_updateUserList = await sqlQuery(sqlStr_updateUserList)
 
             io.emit('userList',Array.from(res_updateUserList))
+
+            let sqlStr_unReadMsg = "select * from chat where isRead = ? and toUser = ?"
+            let res_unReadMsg = await sqlQuery(sqlStr_unReadMsg,["false",data.username])
+            socket.emit('unReadMsg',Array.from(res_unReadMsg))
+
+            let sqlStr_joinGroup = "select * from users where `group` = ?"
+            let res_joinGroup = await sqlQuery(sqlStr_joinGroup,["true"])
+            Array.from(res_joinGroup).forEach((item,i) => {
+                socket.join(item.socket_token)
+            })
         });
 
         socket.on('disconnect',async function(){
@@ -40,6 +50,27 @@ function getSocket(server){
             let res_getUserList = await sqlQuery(sqlStr_getUserList)
 
             socket.emit('userList',Array.from(res_getUserList))
+        })
+
+        socket.on('sendMsg',async function(data){
+            let sqlStr_checkOtherIsLogin = "select * from users where username = ? and online_state = ?";
+            let res_checkOtherIsLogin = await sqlQuery(sqlStr_checkOtherIsLogin,[data.toUser.username,"true"])
+
+            if(res_checkOtherIsLogin.length > 0){
+                let toId = res_checkOtherIsLogin[0].socket_token
+                socket.to(toId).emit('sendMsg',data)
+
+                let sqlStr_saveChat = "insert into chat (fromUser,toUser,content,date,isRead) values (?,?,?,?,?)"
+                await sqlQuery(sqlStr_saveChat,[data.fromUser.username,data.toUser.username,data.content,data.date,"true"])
+            }else{
+                let sqlStr_saveChat = "insert into chat (fromUser,toUser,content,date,isRead) values (?,?,?,?,?)"
+                await sqlQuery(sqlStr_saveChat,[data.fromUser.username,data.toUser.username,data.content,data.date,"false"])
+            }
+        })
+
+        socket.on('readMsg',async function(data){
+            let sqlStr_updateReadState = "update chat set isRead = ? where fromUser = ? and toUser = ?"
+            await sqlQuery(sqlStr_updateReadState,["true",data.toObj,data.self])
         })
     })
 }

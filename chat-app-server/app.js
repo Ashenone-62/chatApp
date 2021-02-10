@@ -26,7 +26,7 @@ app.use('/users', usersRouter);
 
 app.get('/api/userlist',async function(req,res){
 
-  let sqlStr_getUserList = "select * from users";
+  let sqlStr_getUserList = "select * from users where `group` is null";
   let res_getUserList = await sqlQuery(sqlStr_getUserList)
 
   res.append('Access-Control-Allow-Origin','*');
