@@ -1,7 +1,9 @@
 <template>
     <div class="userList" v-if="$root.me != null">
         <div class="head">
+            <!-- 判断是否登录，未登录会有一层灰色遮罩 -->
             <div class="avatar defaultColor" :class="{isOnlineFilter:online_state}">
+                <!-- 渲染头像 -->
                 <img :src="$root.me.avatar" alt="">
             </div>
 
@@ -15,13 +17,16 @@
         </div>
 
         <div class="users">
+            <!-- 循环好友列表（聊天用户列表），绑定chooseUser事件 -->
             <div class="userItem" v-for="(item,i) in friends" :key="i" @click="chooseUser(item)">
+                <!-- 判断是否有未读消息，未读有个红点 -->
                 <div class="left" :class="{unRead:unReadUser.indexOf(item.username)!=-1}">
+                    <!-- 判断该用户是否在线，未登录会有一层灰色遮罩 -->
                     <img class="defaultColor" :src="item.avatar" alt="" :class="{isOnlineFilter:item.online_state=='true'}">
                 </div>
                 <div class="right">
+                    <!-- 渲染用户名 -->
                     <div class="username">{{item.username}}</div>
-                    <div class="currentMsg"> </div>
                 </div>
             </div>
         </div>
@@ -32,8 +37,10 @@
 export default {
     props:['online_state','users','chooseUser','unReadUser'],
     computed:{
+        // 通过计算属性过滤好友列表
         friends:function(){
             return this.users.filter((item,i)=>{
+                //把自己删掉从好友列表
                 return item.username != this.$root.me.username
             })
         }

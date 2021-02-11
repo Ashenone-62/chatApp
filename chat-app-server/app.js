@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+//引入封装的sql
 var sqlQuery = require('./public/javascripts/SQL.js');
 
 var app = express();
@@ -24,14 +24,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+//设置/api/userlist接口
 app.get('/api/userlist',async function(req,res){
-
+  //查不是群的成员
   let sqlStr_getUserList = "select * from users where `group` is null";
   let res_getUserList = await sqlQuery(sqlStr_getUserList)
-
+  //解决跨域问题
   res.append('Access-Control-Allow-Origin','*');
   res.append('Access-Control-Allow-Content-Type','*');
-  
+  //将数据数组化后发送给前端
   res.json(Array.from(res_getUserList))
 })
 
