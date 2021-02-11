@@ -1,4 +1,4 @@
-var sqlQuery = require('./public/javascripts/blogSQL.js');
+var sqlQuery = require('./public/javascripts/SQL.js');
 
 let socketIO = {};
 
